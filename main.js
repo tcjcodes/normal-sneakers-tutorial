@@ -1,12 +1,17 @@
-import './style.css';
-
 import { animate, inView } from 'motion';
 import {
     AmbientLight,
-    BoxGeometry, DirectionalLight, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial,
-    PerspectiveCamera, Scene, TorusKnotGeometry, WebGLRenderer,
+    DirectionalLight,
+    Group,
+    Mesh,
+    MeshLambertMaterial,
+    PerspectiveCamera,
+    Scene,
+    TorusKnotGeometry,
+    WebGLRenderer,
 } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import './style.css';
 
 const sneakerTag = document.querySelector('section.sneaker');
 
@@ -86,21 +91,30 @@ const geometry = new TorusKnotGeometry(1, 0.25, 100, 16);
 const material = new MeshLambertMaterial({ color: 0xff0000 });
 const shape = new Mesh(geometry, material);
 
-// fade and pull in from bottom:
+// On window load, start shape out of view
 const loadGroup = new Group();
 loadGroup.position.y = -10;
 loadGroup.add(shape);
 
-scene.add(loadGroup);
+const scrollGroup = new Group();
+scrollGroup.add(loadGroup);
 
-animate((timeline) => {
-loadGroup.position.y = -10 + (10 * timeline);
-}, { duration: 2, delay: 1 })
+scene.add(scrollGroup);
+
+animate((progress) => {
+    // progress is always between 0->1
+    // Then after load, move shape up slowly
+    loadGroup.position.y = -10 + (10 * progress);
+}, { duration: 2, delay: 1 });
 
 camera.position.z = 5;
 
 const render = () => {
+    // Init properties that we changed
     controls.update();
+
+    // As window scrolls, update the group objects' to rotate vertically
+    scrollGroup.rotation.set(0, window.scrollY * 0.001, 0);
 
     renderer.render(scene, camera);
 };
