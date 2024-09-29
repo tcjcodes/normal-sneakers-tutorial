@@ -1,7 +1,7 @@
 # normal-sneakers
 
 ```shell
-nvm use v18.17.0
+nvm use
 
 npm ci
 npm run dev
