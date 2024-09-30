@@ -34,11 +34,11 @@ animate('section.new-drop', {
 }, { duration: 1, delay: 2 });
 
 // Disappear content
-animate('section.content', { opacity: 0 });
+animate('section.content p, section.content img', { opacity: 0 });
 
 // Re-appear when in view
 inView('section.content', (info) => {
-    animate(info.target, { opacity: 1 }, { duration: 1, delay: 1 });
+    animate(info.target.querySelectorAll('p, img'), { opacity: 1 }, { duration: 1, delay: 1 });
 });
 
 // -- ANIMATION --
@@ -119,4 +119,12 @@ const render = () => {
     renderer.render(scene, camera);
 };
 
+const resize = () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix(); // update after aspect ratio change
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+};
+
 renderer.setAnimationLoop(render);
+window.addEventListener("resize", resize);
